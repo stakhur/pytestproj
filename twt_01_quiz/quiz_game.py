@@ -1,3 +1,11 @@
+core = [
+    # (question, answer, points)
+    ("What does CPU mean? ", "central processing unit", 1),
+    ("What does GPU mean? ", "graphical processing unit", 1),
+    ("What does RAM mean? ", "random access memory", 1),
+    ("What does ROM mean? ", "read only memory", 1),
+]
+
 print("Welcome to my computer quiz!")
 
 # get user input about should we start new game
@@ -8,33 +16,13 @@ if answer.lower() != "yes":
 print("Let's play :)")
 score = 0
 
-answer = input("What does CPU mean? ")
-if answer.lower() == "central processing unit":
-    print("Correct!")
-    score += 1
-else:
-    print("Incorrect")
-
-answer = input("What does GPU mean? ")
-if answer.lower() == "graphical processing unit":
-    print("Correct!")
-    score += 1
-else:
-    print("Incorrect")
-
-answer = input("What does RAM mean? ")
-if answer.lower() == "random access memory":
-    print("Correct!")
-    score += 1
-else:
-    print("Incorrect")
-
-answer = input("What does ROM mean? ")
-if answer.lower() == "read only memory":
-    print("Correct!")
-    score += 1
-else:
-    print("Incorrect")
+for (question, answer, points) in core:
+    user_answer = input(question).lower()
+    if user_answer == answer:
+        print("Correct")
+        score += points
+    else:
+        print("Incorrect")
 
 print("You got {} question{} correct.".format(score, "" if score == 1 else "s"))
-print("You got {}%.".format((score / 4) * 100, "" if score == 1 else "s"))
+print("You got {}%.".format((score / len(core)) * 100, "" if score == 1 else "s"))
