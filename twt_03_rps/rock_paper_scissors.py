@@ -1,24 +1,24 @@
 import random
 
-types = ("rock", "paper", "scissors")
+gtypes = ("rock", "paper", "scissors")
 # rules = {
 #     "rock": "scissors",
 #     "paper": "rock",
 #     "scissors": "paper",
 # }
-rules = {types[i]: types[i-1] for i in range(len(types))}
+grules = {gtypes[i]: gtypes[i-1] for i in range(len(gtypes))}
 
 
-def game():
+def game(types, rules):
     user_wins = 0
     computer_wins = 0
 
     while True:
-        user_input = input("Type Rock/Paper/Scissors or Q to quit: ").lower()
+        user_input = input("Type {} or Q to quit: ".format("/".join(types))).lower()
         if user_input == 'q':
             break
         elif user_input not in types:
-            print("Please type any of [Rock, Paper, Scissors, Q].")
+            print("Please type any of [{}, Q].".format(", ".join(types)))
             continue
 
         computer_input = types[random.randrange(3)]
@@ -45,4 +45,4 @@ def game():
         result = "Draw."
     print("Game results: {}".format(result))
 
-game()
+game(gtypes, grules)
