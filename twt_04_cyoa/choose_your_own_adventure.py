@@ -1,6 +1,6 @@
 def game():
-    name = input("Введите ваше имя: ")
-    print("Приветствую", name, "в этом приключении!")
+    name = input("Input your name: ")
+    print("Hello", name, "in this adventure!")
 
     items_in_game = {
         "light": True
@@ -21,19 +21,21 @@ def game():
         core[1] = (text, opt)
 
     core = {
-        0: ("Вы находитесь на даче. Вы можете пойти налево *left* в лес или направо *right* к магазину. Также можно закончить *end* игру",
+        0: ("You are in the countryhouse. You could go left to the forest or right to the shop. Also you could end the game.\n"
+            "Type: left - go to the forest; right - go to the shop; end - end the game.",
             {"left": 1, "right": 2, "end": 5}),
-        1: ("Вы направляетесь к лесу. {}".format(
-            "По пути вы видите фонарь, лежащий у канавы. Вы можете поднять *pick* его, " if items_in_game["light"] else "Вы можете ") +
-            "пойти вперед *foreward* к лесу или повернуть назад *return* к дому.",
+        1: ("You are going to the forest. {} go foreward to the forest or return back to home.\n"
+            "Type: {}foreward - go to the forest; return - go back to home"
+            .format("On the road you see the light. You could pick it," if items_in_game["light"] else "You could",
+                    "pick - pick the light; " if items_in_game["light"] else ""),
             {"pick": 3, "foreward": 4, "return": 0}),
-        2: ("Вы пришли к магазину. Он закрыт. Вы можете вернуться *return* к дому",
+        2: ("You came to the shop. It is closed. You could return back to home",
             {"return": 0}),
-        3: ("Вы подняли фонарь. Вы можете пойти вперед *foreward* к лесу или повернуть назад *return* к дому.",
+        3: ("You have picked the light. You could go to the forest or return back to home.",
             {"foreward": 4, "return": 0}, pick_light),
-        4: ("Вы пришли в лес. Тут очень темно. Вы можете вернутья назад *return* к дому.",
+        4: ("You came to the forest. It is too dark. You could return back to home.",
             {"return": 0}),
-        5: ("Спасибо за игру. Всего хорошего, {}".format(name),
+        5: ("Thank you for the game! Buy, {}".format(name),
             {})
     }
 
@@ -52,7 +54,7 @@ def game():
 
         choose = ""
         while choose not in options.keys():
-            choose = input("Ваши действия ({}): ".format("/".join(options.keys())))
+            choose = input("Your actions ({}): ".format("/".join(options.keys())))
 
         current_pos = options[choose]
 
