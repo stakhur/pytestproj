@@ -1,13 +1,8 @@
 import base64
-import os
 
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-
-def write_key():
-    with open("key.key", "wb") as key_file:
-        key_file.write(Fernet.generate_key())
 
 
 def load_key():
@@ -16,7 +11,8 @@ def load_key():
         with open("key.key", "rb") as file:
             key = file.read()
     except FileNotFoundError:
-        write_key()
+        with open("key.key", "wb") as key_file:
+            key_file.write(Fernet.generate_key())
         return load_key()
 
     return key
