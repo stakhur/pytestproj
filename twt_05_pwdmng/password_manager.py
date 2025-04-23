@@ -1,17 +1,24 @@
 import base64
+import os
 
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
+def get_path(filename) -> str:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_dir, filename)
+    return file_path
+
+
 def load_key():
     key = ""
     try:
-        with open("key.key", "rb") as file:
+        with open(get_path("key.key"), "rb") as file:
             key = file.read()
     except FileNotFoundError:
-        with open("key.key", "wb") as key_file:
+        with open(get_path("key.key"), "wb") as key_file:
             key_file.write(Fernet.generate_key())
         return load_key()
 
@@ -32,22 +39,25 @@ def get_fernet(password) -> Fernet:
 
 
 def view(fer: Fernet):
-    with open("passwords.txt", "r") as f:
-        for line in f.readlines():
-            data = line.rstrip()
-            user, pwd = data.split("|")
-            try:
-                print(f"User: {user} | Password: {fer.decrypt(pwd.encode()).decode()}")
-            except InvalidToken:
-                # print(f"Cannot decode a password with provided key for user: {user}")
-                continue
+    try:
+        with open(get_path("passwords.txt"), "r") as f:
+            for line in f.readlines():
+                data = line.rstrip()
+                user, pwd = data.split("|")
+                try:
+                    print(f"User: {user} | Password: {fer.decrypt(pwd.encode()).decode()}")
+                except InvalidToken:
+                    # print(f"Cannot decode a password with provided key for user: {user}")
+                    continue
+    except FileNotFoundError:
+        print("File with passwords not found. First, add a new password")
 
 
 def add(fer: Fernet):
     user = input("Account Name: ")
     pwd = fer.encrypt(input("Password: ").encode())
 
-    with open("passwords.txt", "a") as f:
+    with open(get_path("passwords.txt"), "a") as f:
         f.write(user + "|" + pwd.decode() + "\n")
 
 
