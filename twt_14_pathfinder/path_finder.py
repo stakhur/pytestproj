@@ -16,12 +16,13 @@ def print_maze(maze, stdscr: window, path=[]):
     BLUE = curses.color_pair(1)
     RED = curses.color_pair(2)
 
+    stdscr.clear()
     for i, row in enumerate(maze):
         for j, value in enumerate(row):
-            stdscr.addch(i, j*2, value, BLUE)
-
-    for (row, col) in path:
-        stdscr.addch(row, col*2, ROUTE_CHAR, RED)
+            if (i, j) in path:
+                stdscr.addch(i, j*2, ROUTE_CHAR, RED)
+            else:
+                stdscr.addch(i, j*2, value, BLUE)
 
     stdscr.refresh()
 
@@ -65,29 +66,28 @@ def main(stdscr: window):
     available_positions = queue.Queue()
     start_pos = get_start_pos(maze)
     if start_pos == (-1, -1):
-        stdscr.addstr(0, 0, "Invalid maze.")
+        stdscr.addstr(0, 0, f"Invalid maze! It should have {START_CHAR} as a start point")
         stdscr.getch()
         return
 
-    available_positions.put(start_pos)
-    path = [start_pos]
+    processed = set()
+    available_positions.put((start_pos, [start_pos]))
 
-    while True:
+    while not available_positions.empty():
+        next_pos, path = available_positions.get()
+        processed.add(next_pos)
+
         print_maze(maze, stdscr, path)
 
-        next_pos = available_positions.get()
-        path.append(next_pos)
-
         if (check_next_pos(maze, next_pos)):
-            print_maze(maze, stdscr, path)
             break
 
         movements = get_available_movements(maze, next_pos)
         for movement in movements:
-            if movement not in path:
-                available_positions.put(movement)
+            if movement not in processed:
+                available_positions.put((movement, path + [movement]))
 
-        time.sleep(0.05)
+        time.sleep(0.1)
     
     stdscr.getch()
 
