@@ -1,49 +1,34 @@
-import os
-import tkinter as tk
+import argparse
 
-from tkinter import filedialog
-
-from pytubefix import YouTube
-
-
-def download_video(url, save_path):
-    try:
-        yt = YouTube(url)
-        # stream = yt.streams.get_highest_resolution()
-        streams = yt.streams.filter(progressive=True, file_extension="mp4")
-        stream = streams.get_highest_resolution()
-        print(f"Downloading: {yt.title} - {stream.resolution}")
-        stream.download(output_path=save_path)
-        print("Video downloaded successfully!")
-    except Exception as e:
-        print(e)
-
-
-def test():
-    # url = "https://www.youtube.com/watch?v=p-vqh0KBtHM"
-    url = "https://www.youtube.com/watch?v=aMgB018o71U"
-    save_path = os.path.dirname(os.path.abspath(__file__))
-    download_video(url, save_path)
-
-
-def open_file_dialog():
-    folder = filedialog.askdirectory()
-    if folder:
-        print(f"Selected folder: {folder}")
-    return folder
-
+import tube_cli
+try:
+    import tube_gui
+    gui_ready=True
+except:
+    gui_ready=False
 
 def main():
-    root = tk.Tk()
-    root.withdraw()
+    parser = argparse.ArgumentParser(description="Video downloader")
+    parser.add_argument("--gui", action='store_true', help="An optional - run gui")
+    parser.add_argument("--url", type=str, help="An optional link to the video")
+    parser.add_argument("--path", type=str, help="An optional path to save video")
+    args = parser.parse_args()
 
-    video_url = input("Please enter a YouTube url: ")
-    save_dir = open_file_dialog()
-    if save_dir:
-        download_video(video_url, save_dir)
-    else:
-        print("Invalid save location")
+    gui = args.gui
+    url = args.url
+    if url is None:
+        url = ""
+    path = args.path
+    if path is None:
+        path = ""
 
+    if gui:
+        if gui_ready:
+            tube_gui.main(url, path)
+            return
+        else:
+            print("Cannot import gui. Running cli...")
+    tube_cli.main(url, path)
 
 if __name__ == "__main__":
     main()
