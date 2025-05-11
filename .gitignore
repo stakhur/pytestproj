@@ -3,4 +3,4 @@ key.key
 passwords.txt
 *.pyc
 *.mp4
-
+*/backup/*
