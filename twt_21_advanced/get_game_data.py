@@ -49,6 +49,15 @@ def copy_and_rename(game_paths, target):
     return new_game_paths
 
 
+def make_json_metadata_file(path, game_dirs):
+    data = {
+        "gameNames": game_dirs,
+        "numberOfGames": len(game_dirs)
+    }
+    with open(path, "w") as f:
+        json.dump(data, f)
+
+
 def compile_code(game_paths):
     for path in game_paths:
         game = os.path.basename(path)
@@ -89,6 +98,9 @@ def main(source, target):
     game_paths = find_all_game_paths(source_path)
     create_dir_or_remove_context(target_path)
     game_paths = copy_and_rename(game_paths, target_path)
+    json_path = os.path.join(target_path, "metadata.json")
+    games = [os.path.basename(g) for g in game_paths]
+    make_json_metadata_file(json_path, games)
     compile_code(game_paths)
 
 
